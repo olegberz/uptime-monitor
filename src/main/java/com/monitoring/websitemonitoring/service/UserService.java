@@ -1,5 +1,6 @@
 package com.monitoring.websitemonitoring.service;
 
+import com.monitoring.websitemonitoring.DTO.UserDTO;
 import com.monitoring.websitemonitoring.ExceptionHandler.AlreadyExistsException;
 import com.monitoring.websitemonitoring.entity.User;
 import com.monitoring.websitemonitoring.repo.UserRepo;
@@ -27,35 +28,41 @@ public class UserService {
     }
 
     @Transactional
-    public User createUser(User user) {
-        if (userRepo.existsByEmail(user.getEmail()))
+    public User createUser(UserDTO userDTO) {
+        if (userRepo.existsByEmail(userDTO.getEmail()))
             throw new AlreadyExistsException("User with that email already exists");
 
-        if (userRepo.existsByTelegramId(user.getTelegramId()))
+        if (userRepo.existsByTelegramId(userDTO.getTelegramId()))
             throw new AlreadyExistsException("User with that Telegram ID already exists");
+
+        User user = new User();
+        user.setName(userDTO.getName());
+        user.setEmail(user.getEmail());
+        user.setTelegramId(userDTO.getTelegramId());
+
         return userRepo.save(user);
     }
 
     @Transactional
-    public User updateUser(Long id, User user) {
+    public User updateUser(Long id, UserDTO userDTO) {
         User existingUser = findUserById(id);
 
-        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
-            if (userRepo.existsByEmail(user.getEmail())) {
+        if (userDTO.getEmail() != null && !userDTO.getEmail().equals(existingUser.getEmail())) {
+            if (userRepo.existsByEmail(userDTO.getEmail())) {
                 throw new AlreadyExistsException("User with this email already exists");
             }
-            existingUser.setEmail(user.getEmail());
+            existingUser.setEmail(userDTO.getEmail());
         }
 
-        if (user.getName() != null) {
-            existingUser.setName(user.getName());
+        if (userDTO.getName() != null) {
+            existingUser.setName(userDTO.getName());
         }
 
-        if (user.getTelegramId() != null && !user.getTelegramId().equals(existingUser.getTelegramId())){
-            if (userRepo.existsByTelegramId(user.getTelegramId())) {
+        if (userDTO.getTelegramId() != null && !userDTO.getTelegramId().equals(existingUser.getTelegramId())){
+            if (userRepo.existsByTelegramId(userDTO.getTelegramId())) {
                 throw new AlreadyExistsException("User with this Telegram ID already exists");
             }
-            existingUser.setTelegramId(user.getTelegramId());
+            existingUser.setTelegramId(userDTO.getTelegramId());
         }
         return existingUser;
     }

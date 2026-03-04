@@ -1,15 +1,16 @@
 package com.monitoring.websitemonitoring.controller;
 
+import com.monitoring.websitemonitoring.DTO.UserDTO;
 import com.monitoring.websitemonitoring.entity.User;
 import com.monitoring.websitemonitoring.service.UserService;
-import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@org.springframework.web.bind.annotation.RestController
+@RestController
 @RequestMapping("/api/users")
 public class UserRestController {
     private final UserService userService;
@@ -28,14 +29,14 @@ public class UserRestController {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<User> createUser(@PathVariable Long id, @RequestBody User user) {
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
     @DeleteMapping("/{id}")
