@@ -12,6 +12,7 @@ public class User {
 
     private String name;
     private String password;
+    private String role;
     private String email;
     private String telegramId;
 
@@ -21,10 +22,11 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String name, String password, String email, String telegramId) {
+    public User(Long id, String name, String password, String role, String email, String telegramId) {
         this.id = id;
         this.name = name;
         this.password = password;
+        this.role = role;
         this.email = email;
         this.telegramId = telegramId;
     }
@@ -51,6 +53,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public List<Website> getWebsites() {
+        return websites;
+    }
+
+    public void setWebsites(List<Website> websites) {
+        this.websites = websites;
     }
 
     public String getEmail() {
