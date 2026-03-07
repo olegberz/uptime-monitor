@@ -1,17 +1,33 @@
 package com.monitoring.websitemonitoring.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
-public class User {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User implements UserDetails {
+    private static final String AUTHORITIES_DELIMITER = "::";
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String username;
+
     private String password;
+    private String authorities;
     private String role;
     private String email;
     private String telegramId;
@@ -19,69 +35,60 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Website> websites;
 
-    public User() {
-    }
-
-    public User(Long id, String name, String password, String role, String email, String telegramId) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-        this.email = email;
-        this.telegramId = telegramId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.stream(this.authorities.split(AUTHORITIES_DELIMITER))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public List<Website> getWebsites() {
-        return websites;
-    }
-
     public void setWebsites(List<Website> websites) {
         this.websites = websites;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getTelegramId() {
-        return telegramId;
-    }
 
     public void setTelegramId(String telegramId) {
         this.telegramId = telegramId;

@@ -2,6 +2,7 @@ package com.monitoring.websitemonitoring.repo;
 
 import com.monitoring.websitemonitoring.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -9,4 +10,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByTelegramId(String telegramId);
+
+    UserDetails findByUsername(String username);
 }
